@@ -1,3 +1,5 @@
 runtime: custom
 vm: true
 threadsafe: true
+health_check:
+  enable_health_check: False
