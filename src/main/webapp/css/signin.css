@@ -1,0 +1,97 @@
+body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #eee;
+}
+
+hr {
+	border-top: 1px solid #000
+}
+
+.row.vertical-divider {
+  overflow: hidden;
+}
+.row.vertical-divider > div[class^="col-"] {
+  text-align: center;
+  padding-bottom: 100px;
+  margin-bottom: -100px;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+}
+.row.vertical-divider div[class^="col-"]:first-child {
+  border-left: none;
+}
+.row.vertical-divider div[class^="col-"]:last-child {
+  border-right: none;
+}
+
+span.integratingfactor-logo {
+	background: url('/favicon/android-icon-48x48.png') transparent 50%
+		no-repeat;
+	display: inline-block;
+	vertical-align: middle;
+	width: 48px;
+	height: 48px;	
+}
+
+span.google {
+	background: url('/img/btn_google+_light_normal_ios.png') transparent 50%
+		no-repeat;
+	display: inline-block;
+	vertical-align: middle;
+	width: 42px;
+	height: 42px;
+	padding-right: 60px;
+}
+
+span.line {
+	display: inline-block;
+	vertical-align: middle;
+	width: 2px;
+	height: 42px;
+	border-right: #4e4e4e 1px solid;
+}
+
+span.facebook {
+	background: url('/img/facebook.icon.png') transparent 5px no-repeat;
+	display: inline-block;
+	vertical-align: middle;
+	width: 42px;
+	height: 42px;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  margin-bottom: 10px;
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
