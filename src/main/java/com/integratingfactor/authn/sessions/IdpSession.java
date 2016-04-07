@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.springframework.session.ExpiringSession;
 
-public class GaeSession implements ExpiringSession, Serializable {
+public class IdpSession implements ExpiringSession, Serializable {
     /**
      * 
      */
@@ -18,7 +18,7 @@ public class GaeSession implements ExpiringSession, Serializable {
     long created;
     long accessed;
 
-    public GaeSession(String id) {
+    public IdpSession(String id) {
         this.id = id;
         this.created = new Date().getTime();
         this.accessed = this.created;
