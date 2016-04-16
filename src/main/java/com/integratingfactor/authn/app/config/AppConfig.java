@@ -14,27 +14,11 @@ import com.integratingfactor.authn.sessions.GdsSessionRepository;
 public class AppConfig {
     private static Logger LOG = Logger.getLogger(AppConfig.class.getName());
 
-    // MemcachedSessionRepository sessionRepo = new
-    // MemcachedSessionRepository();
-
-    // @Bean
-    // public MemcachedSessionRepository sessionRepository() {
-    // LOG.info("Creating instance of GaeSessionRepository");
-    // return sessionRepo;
-    // }
-
     @Bean
     public GdsSessionRepository sessionRepository() {
         LOG.info("Creating instance of GdsSessionRepository");
         return new GdsSessionRepository();
     }
-
-    // @Bean
-    // public SessionRepositoryFilter<GaeSession>
-    // springSessionRepositoryFilter() {
-    // LOG.info("Creating instance of SessionRepositoryFilter");
-    // return new SessionRepositoryFilter<GaeSession>(sessionRepo);
-    // }
 
     /**
      * register Spring session with http container
