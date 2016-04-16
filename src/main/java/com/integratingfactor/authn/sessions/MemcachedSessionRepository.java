@@ -32,7 +32,9 @@ public class MemcachedSessionRepository implements SessionRepository<IdpSession>
 
     MemcachedClient client = null;
 
-    Integer ExpiryTimeInSec = 300;
+    static final Integer ExpiryTimeInSec = 3600;
+
+    static final int MaxRetry = 3;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -44,7 +46,14 @@ public class MemcachedSessionRepository implements SessionRepository<IdpSession>
         env = System.getenv().get("MEMCACHE_PORT_11211_TCP_PORT");
         if (env != null)
             mPort = env;
-        LOG.info("Connection with memcached on " + mHost + ":" + mPort);
+        client = null;
+        connect();
+    }
+
+    synchronized void connect() {
+        if (client != null)
+            return;
+        LOG.info("Connecting with memcached on " + mHost + ":" + mPort);
 
         MemcachedClientBuilder builder = new XMemcachedClientBuilder(AddrUtil.getAddresses(mHost + ":" + mPort));
         try {
@@ -55,7 +64,6 @@ public class MemcachedSessionRepository implements SessionRepository<IdpSession>
             LOG.warning("Failed to connect with mem cache: " + e.getMessage());
             throw new RuntimeException("Failed to connect with mem cache");
         }
-
     }
 
     @Override
@@ -79,32 +87,50 @@ public class MemcachedSessionRepository implements SessionRepository<IdpSession>
         }
     }
 
-    @Override
-    public IdpSession getSession(String arg0) {
-        LOG.info("Request to read session: " + arg0);
+    public IdpSession getSession(String arg0, int retry) {
+        if (retry > MaxRetry) {
+            LOG.info("max retry reached for reading");
+            return null;
+        }
         try {
             IdpSession session = client.getAndTouch(arg0, ExpiryTimeInSec);
             LOG.info("read authentication: " + mapper
                     .writeValueAsString(session != null ? session.getAttribute("SPRING_SECURITY_CONTEXT") : null));
             return session;
         } catch (TimeoutException | InterruptedException | MemcachedException | JsonProcessingException e) {
-            e.printStackTrace();
-            LOG.warning("Failed to get session from memcache");
+            LOG.warning("Failed to get session from memcache : " + e.getMessage());
+            client = null;
+            connect();
+            return getSession(arg0, retry + 1);
         }
-        return null;
     }
 
     @Override
-    public void save(IdpSession arg0) {
-        LOG.info("Request to save session: " + arg0.getId());
-        // inMem.put(arg0.getId(), arg0);
+    public IdpSession getSession(String arg0) {
+        LOG.info("Request to read session: " + arg0);
+        return getSession(arg0, 0);
+    }
+
+    public void save(IdpSession arg0, int retry) {
+        if (retry > MaxRetry) {
+            LOG.info("max retry reached for saving");
+            return;
+        }
         try {
             LOG.info("writing authentication: "
                     + mapper.writeValueAsString(arg0 != null ? arg0.getAttribute("SPRING_SECURITY_CONTEXT") : null));
             client.set(arg0.getId(), ExpiryTimeInSec, arg0);
         } catch (TimeoutException | InterruptedException | MemcachedException | JsonProcessingException e) {
-            e.printStackTrace();
-            LOG.warning("Failed to save session to memcache");
+            LOG.warning("Failed to save session to memcache : " + e.getMessage());
+            client = null;
+            connect();
+            save(arg0, retry + 1);
         }
+    }
+
+    @Override
+    public void save(IdpSession arg0) {
+        LOG.info("Request to save session: " + arg0.getId());
+        save(arg0, 0);
     }
 }

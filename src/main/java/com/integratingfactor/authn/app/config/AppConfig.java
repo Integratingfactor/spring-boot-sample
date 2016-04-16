@@ -7,19 +7,26 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.session.config.annotation.web.http.EnableSpringHttpSession;
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 
-import com.integratingfactor.authn.sessions.MemcachedSessionRepository;
+import com.integratingfactor.authn.sessions.GdsSessionRepository;
 
 @EnableSpringHttpSession
 @Configuration
 public class AppConfig {
     private static Logger LOG = Logger.getLogger(AppConfig.class.getName());
 
-    MemcachedSessionRepository sessionRepo = new MemcachedSessionRepository();
+    // MemcachedSessionRepository sessionRepo = new
+    // MemcachedSessionRepository();
+
+    // @Bean
+    // public MemcachedSessionRepository sessionRepository() {
+    // LOG.info("Creating instance of GaeSessionRepository");
+    // return sessionRepo;
+    // }
 
     @Bean
-    public MemcachedSessionRepository sessionRepository() {
-        LOG.info("Creating instance of GaeSessionRepository");
-        return sessionRepo;
+    public GdsSessionRepository sessionRepository() {
+        LOG.info("Creating instance of GdsSessionRepository");
+        return new GdsSessionRepository();
     }
 
     // @Bean
